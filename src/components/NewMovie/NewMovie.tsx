@@ -10,35 +10,35 @@ export const NewMovie: React.FC<Props> = ({ onSubmit }) => {
   // Increase the count after successful form submission
   // to reset touched status of all the `Field`s
   const [count, setCount] = useState(0);
-  const [title, setTitle] = useState('');
-  const [imgUrl, setImgUrl] = useState('');
-  const [imdbUrl, setImdbUrl] = useState('');
-  const [imdbId, setImdbId] = useState('');
-  const [description, setDescription] = useState('');
 
-  const handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
+  type NewMovie = {
+    title: string;
+    imgUrl: string;
+    imdbUrl: string;
+    imdbId: string;
+    description: string;
   };
 
-  const handleImgUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImgUrl(event.target.value);
+  const [newMovie, setNewMovie] = useState<NewMovie>({
+    title: '',
+    imgUrl: '',
+    imdbUrl: '',
+    imdbId: '',
+    description: '',
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+
+    setNewMovie(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
-  const handleImdbUrlChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImdbUrl(event.target.value);
-  };
-
-  const handleImdbIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setImdbId(event.target.value);
-  };
-
-  const handleDescriptionChange = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    setDescription(event.target.value);
-  };
-
-  const isValid = [title, imgUrl, imdbUrl, imdbId].every(f => f.trim() !== '');
+  const isValid = ['title', 'imgUrl', 'imdbUrl', 'imdbId'].every(
+    field => newMovie[field].trim() !== '',
+  );
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,19 +48,21 @@ export const NewMovie: React.FC<Props> = ({ onSubmit }) => {
     }
 
     const movie: Movie = {
-      title: title.trim(),
-      imgUrl: imgUrl.trim(),
-      imdbUrl: imdbUrl.trim(),
-      imdbId: imdbId.trim(),
-      description: description.trim(),
+      title: newMovie.title.trim(),
+      imgUrl: newMovie.imgUrl.trim(),
+      imdbUrl: newMovie.imdbUrl.trim(),
+      imdbId: newMovie.imdbId.trim(),
+      description: newMovie.description.trim(),
     };
 
     onSubmit(movie);
-    setTitle('');
-    setImgUrl('');
-    setImdbUrl('');
-    setImdbId('');
-    setDescription('');
+    setNewMovie({
+      title: '',
+      imgUrl: '',
+      imdbUrl: '',
+      imdbId: '',
+      description: '',
+    });
     setCount(prev => prev + 1);
   };
 
@@ -71,37 +73,37 @@ export const NewMovie: React.FC<Props> = ({ onSubmit }) => {
       <TextField
         name="title"
         label="Title"
-        value={title}
-        onChange={handleTitleChange}
+        value={newMovie.title}
+        onChange={handleChange}
         required
       />
 
       <TextField
         name="description"
         label="Description"
-        value={description}
-        onChange={handleDescriptionChange}
+        value={newMovie.description}
+        onChange={handleChange}
       />
 
       <TextField
         name="imgUrl"
         label="Image URL"
-        value={imgUrl}
-        onChange={handleImgUrlChange}
+        value={newMovie.imgUrl}
+        onChange={handleChange}
       />
 
       <TextField
         name="imdbUrl"
         label="Imdb URL"
-        value={imdbUrl}
-        onChange={handleImdbUrlChange}
+        value={newMovie.imdbUrl}
+        onChange={handleChange}
       />
 
       <TextField
         name="imdbId"
         label="Imdb ID"
-        value={imdbId}
-        onChange={handleImdbIdChange}
+        value={newMovie.imdbId}
+        onChange={handleChange}
       />
 
       <div className="field is-grouped">
